@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  slack-connections:
+    build: .
+    tty: true
+    container_name: slack-connections
+    env_file:
+      - .env
+    volumes:
+      - .:/app
