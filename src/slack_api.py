@@ -1,10 +1,15 @@
+import os
 import requests
 import time
 
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 class SlackAPI:
-    
-    BASE_URL = "https://slack.com/api/"
+
+    BASE_URL = os.getenv("SLACK_BASE_URL", "https://slack.com/api/")
 
     def __init__(self, token: str, max_retries=3):
         self.token = token

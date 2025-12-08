@@ -3,7 +3,7 @@ import time
 
 def build_connections(slack):
     users = slack.paginated("users.list", "members", {"limit": 200})
-    users_map = {u["id"]: u for u in users if not u.get("deleted", False)}
+    users_map = {user["id"]: user for user in users if not user.get("deleted", False)}
 
     channels = slack.paginated(
         "conversations.list",
