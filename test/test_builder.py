@@ -17,7 +17,7 @@ class FakeSlack:
                 {"id": "C2", "name": "private", "is_private": True},
             ]
 
-    def _request(self, method, params):
+    def request(self, method, params):
         if params["channel"] == "C1":
             return {"ok": True, "members": ["U1", "U2"]}
         if params["channel"] == "C2":
