@@ -18,7 +18,7 @@ class SlackAPI:
 
     def request(self, method: str, params=None):
         params = params or {}
-        for attempt in range(1, self.max_retries + 1):
+        for attempt in range(self.max_retries + 1):
             resp = requests.get(
                 self.BASE_URL + method,
                 headers=self.headers,
@@ -44,12 +44,12 @@ class SlackAPI:
         results = []
         cursor = None
         while True:
-            if cursor:
-                params["cursor"] = cursor
-            data = self._request(method, params)
+            data = self.request(method, params)
             results.extend(data.get(key, []))
             cursor = data.get("response_metadata", {}).get("next_cursor")
-            if not cursor:
+            if cursor:
+                params["cursor"] = cursor
+            else:
                 break
 
         return results

@@ -1,8 +1,8 @@
 import json
 import os
 
-from src.slack_api import SlackAPI
-from src.connections_builder import build_connections
+from slack_api import SlackAPI
+from connections_builder import build_connections
 
 
 def main():

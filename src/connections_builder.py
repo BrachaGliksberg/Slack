@@ -3,19 +3,19 @@ import time
 
 def build_connections(slack):
     users = slack.paginated("users.list", "members", {"limit": 200})
-    users_map = {user["id"]: user for user in users if not user.get("deleted", False)}
+    users_map = users_map = {user["id"]: user for user in users if user.get("deleted", True)}
 
     channels = slack.paginated(
         "conversations.list",
         "channels",
-        {"limit": 200, "types": "public_channel,private_channel,mpim,im"},
+        {"limit": 200, "types": "im, mpim, private_channel, public_channel"},
     )
 
     result = []
     for channel in channels:
         channel_id = channel["id"]
         try:
-            members_resp = slack._request(
+            members_resp = slack.request(
                 "conversations.members", {"channel": channel_id}
             )
             members = members_resp.get("members", [])

@@ -1,9 +1,24 @@
 # Slack
 
-Create an automatic connection list to Slack via the WEB API
+The task is to create an automatic connection
+list to Slack via the WEB API
+
+**How it work?**
+
+The system connect to the slack by token and
+slack-router and received all the items of
+channels that in this slack.
 
 **How to run?**
 
 ```bash
-docker compose up --build
+docker build -t <your image> .
 ```
+
+and then
+
+```bash
+docker run -v .:/app <your image>
+```
+
+This command is to copy a file created in Docker to your folder!
