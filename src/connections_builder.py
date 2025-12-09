@@ -1,39 +1,45 @@
 import time
 
 
-def build_connections(slack):
+def get_users(slack):
     users = slack.paginated("users.list", "members", {"limit": 200})
-    users_map = users_map = {user["id"]: user for user in users if user.get("deleted", True)}
+    users_map = {user["id"]: user for user in users if user.get("deleted", True)}
+    return users_map
 
+def get_channels(slack):
     channels = slack.paginated(
         "conversations.list",
         "channels",
         {"limit": 200, "types": "im, mpim, private_channel, public_channel"},
     )
+    return channels
 
+def get_channel_members(slack, channel_id):
+    try:
+        resp = slack.request("conversations.members", {"channel": channel_id})
+        return resp.get("members", [])
+    except Exception:
+        return []
+
+def build_channel_object(channel, users_map, members):
+    return {
+        "id": channel["id"],
+        "name": channel.get("name"),
+        "is_private": channel.get("is_private"),
+        "is_im": channel.get("is_im"),
+        "is_mpim": channel.get("is_mpim"),
+        "members": [users_map.get(uid, {"id": uid}) for uid in members],
+    }
+
+def build_connections(slack):
+    channels = get_channels(slack)
+    users_map = get_users(slack)
     result = []
+
     for channel in channels:
-        channel_id = channel["id"]
-        try:
-            members_resp = slack.request(
-                "conversations.members", {"channel": channel_id}
-            )
-            members = members_resp.get("members", [])
-        except Exception:
-            members = []
-            
-        result.append(
-            {
-                "id": channel_id,
-                "name": channel.get("name"),
-                "is_private": channel.get("is_private"),
-                "is_im": channel.get("is_im"),
-                "is_mpim": channel.get("is_mpim"),
-                "members": [
-                    users_map.get(uid, {"id": uid}) for uid in members
-                ],
-            }
-        )
+        members = get_channel_members(slack, channel["id"])
+        channel_object = build_channel_object(channel, users_map, members)
+        result.append(channel_object)
 
     return {
         "timestamp": int(time.time()),
