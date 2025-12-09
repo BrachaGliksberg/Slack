@@ -19,9 +19,9 @@ class SlackAPI:
     def send_request(self, method, params):
         return requests.get(
             self.BASE_URL + method,
-            headers=self.headers,
-            params=params,
-            timeout=30
+            headers = self.headers,
+            params = params,
+            timeout = 30
         )
     
     def handle_http_status(self, resp, attempt):
