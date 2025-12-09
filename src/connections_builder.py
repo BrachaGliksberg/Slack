@@ -1,6 +1,21 @@
 import time
 
 
+def build_connections(slack):
+    channels = get_channels(slack)
+    users_map = get_users(slack)
+    result = []
+
+    for channel in channels:
+        members = get_channel_members(slack, channel["id"])
+        channel_object = build_channel_object(channel, users_map, members)
+        result.append(channel_object)
+
+    return {
+        "timestamp": int(time.time()),
+        "channels": result,
+    }
+
 def get_users(slack):
     users = slack.paginated("users.list", "members", {"limit": 200})
     users_map = {user["id"]: user for user in users if user.get("deleted", True)}
@@ -25,23 +40,5 @@ def build_channel_object(channel, users_map, members):
     return {
         "id": channel["id"],
         "name": channel.get("name"),
-        "is_private": channel.get("is_private"),
-        "is_im": channel.get("is_im"),
-        "is_mpim": channel.get("is_mpim"),
         "members": [users_map.get(uid, {"id": uid}) for uid in members],
-    }
-
-def build_connections(slack):
-    channels = get_channels(slack)
-    users_map = get_users(slack)
-    result = []
-
-    for channel in channels:
-        members = get_channel_members(slack, channel["id"])
-        channel_object = build_channel_object(channel, users_map, members)
-        result.append(channel_object)
-
-    return {
-        "timestamp": int(time.time()),
-        "channels": result,
     }

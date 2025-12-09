@@ -47,7 +47,7 @@ class SlackAPI:
     def request(self, method: str, params=None):
         params = params or {}
 
-        for attempt in range(1, self.max_retries + 1):
+        for attempt in range(self.max_retries + 1):
             resp = self.send_request(method, params)
             if not self.handle_http_status(resp, attempt):
                 self.wait_retry(attempt)
