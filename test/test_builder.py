@@ -2,8 +2,10 @@ from src.connections_builder import build_connections
 
 
 class FakeSlack:
+    
     def __init__(self):
         self.calls = []
+
 
     def paginated(self, method, key, params=None):
         if method == "users.list":
@@ -16,6 +18,7 @@ class FakeSlack:
                 {"id": "C1", "name": "general", "is_private": False},
                 {"id": "C2", "name": "private", "is_private": True},
             ]
+
 
     def request(self, method, params):
         if params["channel"] == "C1":
