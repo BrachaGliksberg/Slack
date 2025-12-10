@@ -36,10 +36,11 @@ class SlackAPI:
         if data.get("ok"):
             return data
         
-        if data.get("error") in ("ratelimited", "internal_error", "timeout"):
+        error=data.get("error")
+        if error in ("ratelimited", "internal_error", "timeout"):
             return None
         
-        raise RuntimeError(f"Slack API error: {data.get('error')}")
+        raise Exception(f"API error: {error}")
     
     def wait_retry(self, attempt):
         time.sleep(2 ** attempt)

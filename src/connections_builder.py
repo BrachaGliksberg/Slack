@@ -16,11 +16,6 @@ def build_connections(slack):
         "channels": result,
     }
 
-def get_users(slack):
-    users = slack.paginated("users.list", "members", {"limit": 200})
-    users_map = {user["id"]: user for user in users if user.get("deleted", True)}
-    return users_map
-
 def get_channels(slack):
     channels = slack.paginated(
         "conversations.list",
@@ -28,6 +23,11 @@ def get_channels(slack):
         {"limit": 200, "types": "im, mpim, private_channel, public_channel"},
     )
     return channels
+
+def get_users(slack):
+    users = slack.paginated("users.list", "members", {"limit": 200})
+    users_map = {user["id"]: user for user in users if user.get("deleted", True)}
+    return users_map
 
 def get_channel_members(slack, channel_id):
     try:
