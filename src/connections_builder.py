@@ -5,17 +5,20 @@ def build_connections(slack):
     channels = get_channels(slack)
     users_map = get_users(slack)
     result = []
+    
+    new_user = create_user_object("U123456", "Dana", "dana@example.com")
+    add_user(users_map, new_user)
 
     for channel in channels:
         members = get_channel_members(slack, channel["id"])
         channel_object = build_channel_object(channel, users_map, members)
         result.append(channel_object)
-
+    
     return {
         "timestamp": int(time.time()),
         "channels": result,
     }
-
+   
 def get_channels(slack):
     channels = slack.paginated(
         "conversations.list",
@@ -42,3 +45,13 @@ def build_channel_object(channel, users_map, members):
         "name": channel.get("name"),
         "members": [users_map.get(uid, {"id": uid}) for uid in members],
     }
+
+def create_user_object(user_id, real_name=None, email=None):
+    return {
+        "id": user_id,
+        "real_name": real_name,
+        "email": email,
+    }
+
+def add_user(users_map, user):
+    users_map[user["id"]] = user
