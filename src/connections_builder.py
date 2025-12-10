@@ -5,7 +5,6 @@ def build_connections(slack):
     channels = get_channels(slack)
     users_map = get_users(slack)
     result = []
-    
     new_user = create_user_object("U123456", "Dana", "dana@example.com")
     add_user(users_map, new_user)
 
@@ -19,6 +18,7 @@ def build_connections(slack):
         "channels": result,
     }
    
+
 def get_channels(slack):
     channels = slack.paginated(
         "conversations.list",
@@ -27,24 +27,12 @@ def get_channels(slack):
     )
     return channels
 
+
 def get_users(slack):
     users = slack.paginated("users.list", "members", {"limit": 200})
     users_map = {user["id"]: user for user in users if user.get("deleted", True)}
     return users_map
 
-def get_channel_members(slack, channel_id):
-    try:
-        resp = slack.request("conversations.members", {"channel": channel_id})
-        return resp.get("members", [])
-    except Exception:
-        return []
-
-def build_channel_object(channel, users_map, members):
-    return {
-        "id": channel["id"],
-        "name": channel.get("name"),
-        "members": [users_map.get(uid, {"id": uid}) for uid in members],
-    }
 
 def create_user_object(user_id, real_name=None, email=None):
     return {
@@ -53,5 +41,22 @@ def create_user_object(user_id, real_name=None, email=None):
         "email": email,
     }
 
+
 def add_user(users_map, user):
     users_map[user["id"]] = user
+
+
+def get_channel_members(slack, channel_id):
+    try:
+        resp = slack.request("conversations.members", {"channel": channel_id})
+        return resp.get("members", [])
+    except Exception:
+        return []
+
+
+def build_channel_object(channel, users_map, members):
+    return {
+        "id": channel["id"],
+        "name": channel.get("name"),
+        "members": [users_map.get(uid, {"id": uid}) for uid in members],
+    }
