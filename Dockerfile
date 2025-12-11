@@ -10,4 +10,4 @@ VOLUME ["/app"]
 
 COPY . .
 
-CMD ["python", "src/main.py"]
+ENTRYPOINT ["python", "src/main.py"]

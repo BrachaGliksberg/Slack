@@ -21,4 +21,10 @@ and then
 docker run -v .:/app <your image>
 ```
 
+if you want to add user you need to run:
+
+```bash
+docker run -v .:/app python --user-id <user_id> --name <name> --email <user_email>
+```
+
 This command is to copy a file created in Docker to your folder!

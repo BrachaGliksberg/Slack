@@ -1,3 +1,4 @@
+import argparse
 import time
 
 
@@ -5,8 +6,12 @@ def build_connections(slack):
     channels = get_channels(slack)
     users_map = get_users(slack)
     result = []
-    new_user = create_user_object("U123456", "Dana", "dana@example.com")
-    add_user(users_map, new_user)
+    args = parse_args()
+    users_map = {}
+
+    if args.user_id:
+        user = create_user_object(args.user_id, args.name, args.email)
+        add_user(users_map, user)
 
     for channel in channels:
         members = get_channel_members(slack, channel["id"])
@@ -30,8 +35,16 @@ def get_channels(slack):
 
 def get_users(slack):
     users = slack.paginated("users.list", "members", {"limit": 200})
-    users_map = {user["id"]: user for user in users if user.get("deleted", True)}
+    users_map = {user["id"]: user for user in users}
     return users_map
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--user-id")
+    parser.add_argument("--name")
+    parser.add_argument("--email")
+    return parser.parse_args()
 
 
 def create_user_object(user_id, real_name=None, email=None):
