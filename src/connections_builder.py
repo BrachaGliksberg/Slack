@@ -7,7 +7,6 @@ def build_connections(slack):
     users_map = get_users(slack)
     result = []
     args = parse_args()
-    users_map = {}
 
     if args.user_id:
         user = create_user_object(args.user_id, args.name, args.email)
